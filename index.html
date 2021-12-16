@@ -53,7 +53,6 @@
 
     .star {
        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAKCAMAAADByP1DAAAACVBMVEUAAACHiYb////0rNC2AAAAPUlEQVR42mMgBTAxEauQOC1MIABnQmkIwlSKpAVTM0IDIyOUgamQCQIgLCiBqYWwLZgOI+wXykOM8njBBADQJADFovle5QAAAABJRU5ErkJggg==');
-       background-position: 0 0;
        background-size: 100px 20px;
        height: 20px;
        image-rendering: pixelated;
@@ -91,20 +90,27 @@
 </div>
 <script>
 {
-    let STAR_DISAPPEAR = 2;
-    let STAR_BLOW_UP = 5;
+    let STAR_DISAPPEAR = 2, STAR_BLOW_UP = 5;
     let container = document.querySelector('#container');
-    let maxWidth;
-    let maxHeight;
+    let maxWidth, maxHeight;
+
     init();
+    
+    // re-initialize the page on screen resize
     window.addEventListener('resize', init);
    
+    // hide footer
     setTimeout(() => document.getElementById('footer').style.display = 'none', 10000);
    
+    /**
+     * Initializes the stars for the current screen size.
+     */
     function init() {
         maxWidth = Math.floor(container.clientWidth / 20);
         maxHeight = Math.floor(container.clientHeight / 20);
-        
+   
+        // hide stars wich are initialized for a different screen size,
+        // they will be cleaned up after reaching their end of lifetime
         document.querySelectorAll('.star').forEach(star => {
             star.removeAttribute('id');
             star.style.display = 'none';
@@ -118,7 +124,13 @@
             }
         }
     }
-   
+
+    /**
+     * Create and add a new star to the page.
+     * @param {number} x - the x coordinate of the star
+     * @param {number} y - the y coordinate of the star
+     * @return {boolean} true if the star is added, or false if a star with the same id already exists
+     */
     function addStar(x, y) {
         let id = `star-${x}-${y}`;
         if (!document.getElementById(id)) {
@@ -136,7 +148,14 @@
         }
         return false;
     }
-    
+
+    /**
+     * Animate the given star recursively.
+     * @param {object} el - HTML element representing the star
+     * @param {number} animIdx - the number of animation frame to display
+     * @param {number} animLen - the length of animation, i.e. how many frames to display
+     * @param {number} lifetime - the lifetime of the star before it disappears
+     */
     function animate(el, animIdx, animLen, lifetime) {
         if (animIdx <= animLen) {
             setTimeout(() => {
@@ -145,8 +164,10 @@
                 animate(el, animIdx + 1, animLen, 150);
             }, lifetime);
         } else {
+            // at the and of animation, remove the star
             container.removeChild(el);
             if (el.id) {
+                // create a new star for each removed star in an empty position
                 while(!addStar(Math.floor(Math.random() * maxWidth), Math.floor(Math.random() * maxHeight)));
             }
         }
