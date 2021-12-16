@@ -56,6 +56,7 @@
        background-size: 100px 20px;
        height: 20px;
        image-rendering: pixelated;
+       position: absolute;
        width: 20px;
     }
 
@@ -137,7 +138,6 @@
             let el = document.createElement('div');
             el.id = id;
             el.classList.add('star', 'star-1');
-            el.style.position = 'absolute';
             el.style.left = `${x * 20}px`;
             el.style.top = `${y * 20}px`;
             container.appendChild(el);
