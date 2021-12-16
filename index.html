@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="description" content="Starry Night, inspired by the original screen saver known from Norton Commander">
+<meta name="copyright" content="Copyright (c) 2021 Gabor Bata">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@gabor_bata">
+<meta name="twitter:creator" content="@gabor_bata">
+<meta property="og:title" content="Starry Night">
+<meta property="og:description" content="Starry Night, inspired by the original screen saver known from Norton Commander">
+<meta property="og:type" content="product">
+<title>Starry Night</title>
+<style type="text/css">
+    body {
+        background-color: #000;
+        color: #ccc;
+        margin: 0;
+        padding: 0;
+    }
+
+    #wrapper {
+        display: table;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+    }
+
+    #container {
+        display: table-cell;
+    }
+
+    #footer {
+      bottom: 0;
+      height: 150px;
+      left: 0;
+      position: fixed;
+      width: 100%;
+      z-index: 1;
+    }
+
+    #dialog {
+        background-color: #00c;  
+        border: 4px double #0cc;
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px auto;
+        padding: 20px;
+        width: 60%;
+    }
+
+    .star {
+       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAKCAMAAADByP1DAAAACVBMVEUAAACHiYb////0rNC2AAAAPUlEQVR42mMgBTAxEauQOC1MIABnQmkIwlSKpAVTM0IDIyOUgamQCQIgLCiBqYWwLZgOI+wXykOM8njBBADQJADFovle5QAAAABJRU5ErkJggg==');
+       background-position: 0 0;
+       background-size: 100px 20px;
+       height: 20px;
+       image-rendering: pixelated;
+       width: 20px;
+    }
+
+    .star-1 {
+        background-position: 0 0;
+    }
+
+    .star-2 {
+        background-position: -20px 0;
+    }
+
+    .star-3 {
+        background-position: -40px 0;
+    }
+
+    .star-4 {
+        background-position: -60px 0;
+    }
+
+    .star-5 {
+        background-position: -80px 0;
+    }
+</style>
+<div id="footer">
+   <div id="dialog">
+        Starry Night, inspired by the original screen saver known from Norton Commander<br>
+        Copyright (c) 2021 Gabor Bata
+   </div>
+</div>
+<div id="wrapper">
+    <div id="container"></div>
+</div>
+<script>
+{
+    let STAR_DISAPPEAR = 2;
+    let STAR_BLOW_UP = 5;
+    let container = document.querySelector('#container');
+    let maxWidth;
+    let maxHeight;
+    init();
+    window.addEventListener('resize', init);
+   
+    setTimeout(() => document.getElementById('footer').style.display = 'none', 10000);
+   
+    function init() {
+        maxWidth = Math.floor(container.clientWidth / 20);
+        maxHeight = Math.floor(container.clientHeight / 20);
+        
+        document.querySelectorAll('.star').forEach(star => {
+            star.removeAttribute('id');
+            star.style.display = 'none';
+        });
+
+        for (let x = 0; x < maxWidth; x++) {
+            for (let y = 0; y < maxHeight; y++) {
+                if (Math.random() > 0.98) {
+                    addStar(x, y);
+                }
+            }
+        }
+    }
+   
+    function addStar(x, y) {
+        let id = `star-${x}-${y}`;
+        if (!document.getElementById(id)) {
+            let el = document.createElement('div');
+            el.id = id;
+            el.classList.add('star', 'star-1');
+            el.style.position = 'absolute';
+            el.style.left = `${x * 20}px`;
+            el.style.top = `${y * 20}px`;
+            container.appendChild(el);
+            let animLen = Math.random() > 0.2 ? STAR_DISAPPEAR : STAR_BLOW_UP;
+            let lifetime = Math.floor(Math.random() * 8000) + 2000;
+            animate(el, 1, animLen, lifetime);
+            return true;
+        }
+        return false;
+    }
+    
+    function animate(el, animIdx, animLen, lifetime) {
+        if (animIdx <= animLen) {
+            setTimeout(() => {
+                el.classList.add('star-' + (animIdx + 1));
+                el.classList.remove('star-' + animIdx);
+                animate(el, animIdx + 1, animLen, 150);
+            }, lifetime);
+        } else {
+            container.removeChild(el);
+            if (el.id) {
+                while(!addStar(Math.floor(Math.random() * maxWidth), Math.floor(Math.random() * maxHeight)));
+            }
+        }
+    }
+}
+</script>
+</html>
