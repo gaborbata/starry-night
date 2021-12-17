@@ -52,8 +52,8 @@
     }
 
     .star {
-       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAKCAMAAADByP1DAAAACVBMVEUAAACHiYb////0rNC2AAAAPUlEQVR42mMgBTAxEauQOC1MIABnQmkIwlSKpAVTM0IDIyOUgamQCQIgLCiBqYWwLZgOI+wXykOM8njBBADQJADFovle5QAAAABJRU5ErkJggg==');
-       background-size: 100px 20px;
+       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAKCAMAAADfAc3wAAAACVBMVEUAAACHiYb////0rNC2AAAAP0lEQVR42mMgDzAxka6FVM1MIABnQmkIwqcJSTOmMQitjIwYzsHUwgQBEBaYwKsZv834/UrQzzQLbQLuohQAAAB7AM2+S2csAAAAAElFTkSuQmCC');
+       background-size: 120px 20px;
        height: 20px;
        image-rendering: pixelated;
        position: absolute;
@@ -79,6 +79,10 @@
     .star-5 {
         background-position: -80px 0;
     }
+
+    .star-6 {
+        background-position: -100px 0;
+    }
 </style>
 <div id="footer">
    <div id="dialog">
@@ -91,7 +95,7 @@
 </div>
 <script>
 {
-    let STAR_DISAPPEAR = 2, STAR_BLOW_UP = 5;
+    let STAR_DISAPPEAR = 2, STAR_BLOW_UP = 6;
     let container = document.querySelector('#container');
     let maxWidth, maxHeight;
 
