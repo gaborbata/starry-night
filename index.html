@@ -10,7 +10,9 @@
 <meta property="og:title" content="Starry Night">
 <meta property="og:description" content="Starry Night, inspired by the original screen saver known from Norton Commander">
 <meta property="og:type" content="product">
-<title>Starry Night</title>
+<meta property="og:url" content="https://gaborbata.github.io/starry-night/">
+<meta property="og:image" content="http://gaborbata.github.io/starry-night/starry-night.png">
+<title>✨ Starry Night</title>
 <style type="text/css">
     body {
         background-color: #000;
@@ -105,14 +107,14 @@
     window.addEventListener('resize', init);
    
     // hide footer
-    setTimeout(() => document.getElementById('footer').style.display = 'none', 10000);
+    setTimeout(() => document.getElementById('footer').style.display = 'none', 8000);
    
     /**
      * Initializes the stars for the current screen size.
      */
     function init() {
         maxWidth = Math.floor(container.clientWidth / 20);
-        maxHeight = Math.floor(container.clientHeight / 20);
+        maxHeight = Math.floor(container.clientHeight / 30);
    
         // hide stars wich are initialized for a different screen size,
         // they will be cleaned up after reaching their end of lifetime
@@ -143,7 +145,7 @@
             el.id = id;
             el.classList.add('star', 'star-1');
             el.style.left = `${x * 20}px`;
-            el.style.top = `${y * 20}px`;
+            el.style.top = `${y * 30 + 5}px`;
             container.appendChild(el);
             let animLen = Math.random() > 0.2 ? STAR_DISAPPEAR : STAR_BLOW_UP;
             let lifetime = Math.floor(Math.random() * 8000) + 2000;
