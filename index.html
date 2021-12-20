@@ -97,7 +97,7 @@
 <script>
 {
     const STAR_DISAPPEAR = 2, STAR_BLOW_UP = 6, STARS = new Map(), TICK = 150;
-    let maxWidth, maxHeight, intervalId = null;
+    let width, height, intervalId = null;
 
     init();
     window.addEventListener('resize', init);
@@ -105,14 +105,12 @@
 
     function init() {
         intervalId != null && clearInterval(intervalId);
-        STARS.clear();
         const container = document.querySelector('#container');
-        while (container.firstChild) {
-            container.removeChild(container.lastChild);
-        }
-        maxWidth = Math.floor(container.clientWidth / 20);
-        maxHeight = Math.floor(container.clientHeight / 30);
-        const numOfStars = Math.max(Math.floor(maxWidth * maxHeight / 60.0), 5);
+        STARS.forEach(star => container.removeChild(star.el));
+        STARS.clear();
+        width = Math.floor(container.clientWidth / 20);
+        height = Math.floor(container.clientHeight / 30);
+        const numOfStars = Math.max(Math.floor(width * height / 60.0), 5);
         while (STARS.size < numOfStars) {
             const el = document.createElement('div');
             el.classList.add('star');
@@ -121,7 +119,7 @@
         }
         intervalId = setInterval(animate, TICK);
     }
-    
+
     function animate() {
         const deadStars = [];
         STARS.forEach((star, id) => {
@@ -145,8 +143,8 @@
     function reset(el) {
         let x, y, id;
         do {
-            x = Math.floor(Math.random() * maxWidth);
-            y = Math.floor(Math.random() * maxHeight);
+            x = Math.floor(Math.random() * width);
+            y = Math.floor(Math.random() * height);
             id = `${x}-${y}`;
         } while (STARS.has(id));
         el.style.left = `${x * 20}px`;
