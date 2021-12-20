@@ -44,9 +44,8 @@
     #dialog {
         background-color: #00c;  
         border: 4px double #0cc;
-        font-family: monospace;
+        font-family: 'Lucida Console', monospace;
         font-size: 14px;
-        font-weight: bold;
         text-align: center;
         margin: 20px auto;
         padding: 20px;
@@ -97,86 +96,79 @@
 </div>
 <script>
 {
-    let STAR_DISAPPEAR = 2, STAR_BLOW_UP = 6;
-    let container = document.querySelector('#container');
-    let maxWidth, maxHeight;
+    const
+        STAR_DISAPPEAR = 2,
+        STAR_BLOW_UP = 6,
+        CONTAINER = document.querySelector('#container'),
+        STARS = new Map(),
+        TICK = 150;
+
+    let
+        maxWidth,
+        maxHeight,
+        intervalId = null;
 
     init();
-    
-    // re-initialize the page on screen resize
     window.addEventListener('resize', init);
-   
-    // hide footer
     setTimeout(() => document.getElementById('footer').style.display = 'none', 8000);
-   
-    /**
-     * Initializes the stars for the current screen size.
-     */
-    function init() {
-        maxWidth = Math.floor(container.clientWidth / 20);
-        maxHeight = Math.floor(container.clientHeight / 30);
-   
-        // hide stars wich are initialized for a different screen size,
-        // they will be cleaned up after reaching their end of lifetime
-        document.querySelectorAll('.star').forEach(star => {
-            star.removeAttribute('id');
-            star.style.display = 'none';
-        });
 
+    function init() {
+        intervalId != null && clearInterval(intervalId);
+        STARS.clear();
+        while (CONTAINER.firstChild) {
+            CONTAINER.removeChild(CONTAINER.lastChild);
+        }
+        maxWidth = Math.floor(CONTAINER.clientWidth / 20);
+        maxHeight = Math.floor(CONTAINER.clientHeight / 30);
         for (let x = 0; x < maxWidth; x++) {
             for (let y = 0; y < maxHeight; y++) {
                 if (Math.random() > 0.98) {
-                    addStar(x, y);
+                    const el = document.createElement('div');
+                    el.classList.add('star');
+                    reset(el, x, y);
+                    CONTAINER.appendChild(el);
                 }
             }
         }
+        intervalId = setInterval(animate, TICK);
+    }
+    
+    function animate() {
+        const deadStars = [];
+        STARS.forEach((star, id) => {
+            if (star.lifeTime > 0) {
+                star.lifeTime -= TICK;
+            } else {
+                if (star.animIdx < star.animLen) {
+                    star.el.classList.replace(`star-${star.animIdx}`, `star-${++star.animIdx}`);
+                } else {
+                    deadStars.push(id);
+                }
+            }
+        });
+        deadStars.forEach(id => {
+            const el = STARS.get(id).el;
+            STARS.delete(id);
+            while (!reset(el, Math.floor(Math.random() * maxWidth), Math.floor(Math.random() * maxHeight)));
+        });
     }
 
-    /**
-     * Create and add a new star to the page.
-     * @param {number} x - the x coordinate of the star
-     * @param {number} y - the y coordinate of the star
-     * @return {boolean} true if the star is added, or false if a star with the same id already exists
-     */
-    function addStar(x, y) {
-        let id = `star-${x}-${y}`;
-        if (!document.getElementById(id)) {
-            let el = document.createElement('div');
-            el.id = id;
-            el.classList.add('star', 'star-1');
+    function reset(el, x, y) {
+        const id = `star-${x}-${y}`;
+        if (!STARS.has(id)) {
             el.style.left = `${x * 20}px`;
             el.style.top = `${y * 30 + 5}px`;
-            container.appendChild(el);
-            let animLen = Math.random() > 0.2 ? STAR_DISAPPEAR : STAR_BLOW_UP;
-            let lifetime = Math.floor(Math.random() * 8000) + 2000;
-            animate(el, 1, animLen, lifetime);
+            el.classList.remove(`star-${STAR_DISAPPEAR}`, `star-${STAR_BLOW_UP}`);
+            el.classList.add('star-1');
+            STARS.set(id, {
+                el: el,
+                lifeTime: Math.floor(Math.random() * 8000) + 2000,
+                animLen: Math.random() > 0.2 ? STAR_DISAPPEAR : STAR_BLOW_UP,
+                animIdx: 1
+            });
             return true;
         }
         return false;
-    }
-
-    /**
-     * Animate the given star recursively.
-     * @param {object} el - HTML element representing the star
-     * @param {number} animIdx - the number of animation frame to display
-     * @param {number} animLen - the length of animation, i.e. how many frames to display
-     * @param {number} lifetime - the lifetime of the star before it disappears
-     */
-    function animate(el, animIdx, animLen, lifetime) {
-        if (animIdx <= animLen) {
-            setTimeout(() => {
-                el.classList.add('star-' + (animIdx + 1));
-                el.classList.remove('star-' + animIdx);
-                animate(el, animIdx + 1, animLen, 150);
-            }, lifetime);
-        } else {
-            // at the and of animation, remove the star
-            container.removeChild(el);
-            if (el.id) {
-                // create a new star for each removed star in an empty position
-                while(!addStar(Math.floor(Math.random() * maxWidth), Math.floor(Math.random() * maxHeight)));
-            }
-        }
     }
 }
 </script>
