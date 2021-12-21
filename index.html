@@ -110,7 +110,7 @@
         STARS.clear();
         width = Math.floor(container.clientWidth / 20);
         height = Math.floor(container.clientHeight / 30);
-        const numOfStars = Math.max(Math.floor(width * height / 60.0), width * height > 5 ? 5 : 0);
+        const numOfStars = Math.max(Math.floor(width * height / 60.0), width * height > 12 ? 12 : 0);
         while (STARS.size < numOfStars) {
             const el = document.createElement('div');
             el.classList.add('star');
