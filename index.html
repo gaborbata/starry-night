@@ -99,10 +99,6 @@
     const STAR_DISAPPEAR = 2, STAR_BLOW_UP = 6, STARS = new Map(), TICK = 150;
     let width, height, intervalId = null;
 
-    init();
-    window.addEventListener('resize', init);
-    setTimeout(() => document.querySelector('#footer').style.display = 'none', 8000);
-
     function init() {
         intervalId != null && clearInterval(intervalId);
         const container = document.querySelector('#container');
@@ -158,6 +154,10 @@
             animIdx: 1
         });
     }
+
+    init();
+    window.addEventListener('resize', init);
+    setTimeout(() => document.querySelector('#footer').style.display = 'none', 8000);
 }
 </script>
 </html>
